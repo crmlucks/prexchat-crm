@@ -93,13 +93,24 @@ return [
     ],
 
     /**
+     * WhatsApp AI.
+     */
+    [
+        'key' => 'whatsapp',
+        'name' => 'WhatsApp AI',
+        'route' => 'admin.whatsapp.index',
+        'sort' => 6,
+        'icon-class' => 'icon-mail', // Using mail icon as placeholder
+    ],
+
+    /**
      * Contacts.
      */
     [
         'key' => 'contacts',
         'name' => 'admin::app.layouts.contacts',
         'route' => 'admin.contacts.persons.index',
-        'sort' => 6,
+        'sort' => 7,
         'icon-class' => 'icon-contact',
     ], [
         'key' => 'contacts.persons',
@@ -122,7 +133,7 @@ return [
         'key' => 'products',
         'name' => 'admin::app.layouts.products',
         'route' => 'admin.products.index',
-        'sort' => 7,
+        'sort' => 8,
         'icon-class' => 'icon-product',
     ],
 
@@ -133,7 +144,7 @@ return [
         'key' => 'settings',
         'name' => 'admin::app.layouts.settings',
         'route' => 'admin.settings.index',
-        'sort' => 8,
+        'sort' => 9,
         'icon-class' => 'icon-setting',
     ], [
         'key' => 'settings.user',
@@ -284,7 +295,7 @@ return [
         'key' => 'configuration',
         'name' => 'admin::app.layouts.configuration',
         'route' => 'admin.configuration.index',
-        'sort' => 9,
+        'sort' => 10,
         'icon-class' => 'icon-configuration',
     ],
 ];
