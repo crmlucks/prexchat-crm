@@ -5,4 +5,4 @@ nixPkgs = ['php83', 'php83Packages.composer', 'php83Extensions.intl', 'php83Exte
 cmds = ['composer install --no-dev --optimize-autoloader', 'npm install', 'npm run build']
 
 [start]
-cmd = 'php artisan serve --host=0.0.0.0 --port=8000'
+cmd = 'mkdir -p storage && touch storage/installed && php artisan serve --host=0.0.0.0 --port=8000'
