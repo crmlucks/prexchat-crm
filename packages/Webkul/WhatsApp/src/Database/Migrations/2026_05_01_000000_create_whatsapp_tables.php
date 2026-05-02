@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('whatsapp_conversations', function (Blueprint $chunk) {
             $chunk->id();
-            $chunk->integer('lead_id')->unsigned()->nullable();
+            $chunk->bigInteger('lead_id')->unsigned()->nullable();
             $chunk->string('remote_jid');
             $chunk->string('external_id')->nullable(); // Instance name or Meta Phone ID
             $chunk->timestamps();
@@ -25,7 +25,7 @@ return new class extends Migration
 
         Schema::create('whatsapp_messages', function (Blueprint $chunk) {
             $chunk->id();
-            $chunk->integer('conversation_id')->unsigned();
+            $chunk->bigInteger('conversation_id')->unsigned();
             $chunk->text('content');
             $chunk->enum('sender', ['user', 'bot'])->default('user');
             $chunk->string('message_type')->default('text');
