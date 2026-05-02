@@ -7,7 +7,7 @@ Route::group(['middleware' => ['api']], function () {
     Route::match(['get', 'post'], 'whatsapp/webhook', [WhatsAppController::class, 'handleWebhook'])->name('whatsapp.webhook');
 });
 
-Route::group(['middleware' => ['web', 'admin']], function () {
+Route::group(['middleware' => ['web', 'admin_locale', 'user']], function () {
     Route::get('admin/whatsapp/chats', [WhatsAppController::class, 'index'])->name('admin.whatsapp.index');
     
     // Chat API
