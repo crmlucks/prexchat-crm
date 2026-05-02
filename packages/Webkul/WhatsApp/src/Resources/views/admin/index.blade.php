@@ -1,10 +1,8 @@
-@extends('admin::layouts.master')
+<x-admin::layouts>
+    <x-slot:title>
+        {{ __('Prexup AI · WhatsApp Hub') }}
+    </x-slot>
 
-@section('page_title')
-    {{ __('Prexup AI · WhatsApp Hub') }}
-@stop
-
-@section('content-wrapper')
     <div id="whatsapp-chat-app" class="prexup-container">
         
         {{-- ── MODERN BACKGROUND ── --}}
@@ -247,7 +245,7 @@
             border: 2px solid #ef4444; border-radius: 14px;
             animation: pulse 2s infinite;
         }
-        @keyframes pulse { 0% { transform: scale(0.9); opacity: 0.8; } 100% { transform: scale(1.3); opacity: 0; } }
+        @@keyframes pulse { 0% { transform: scale(0.9); opacity: 0.8; } 100% { transform: scale(1.3); opacity: 0; } }
 
         /* Main Chat Area */
         .chat-main-glass {
@@ -323,101 +321,103 @@
 
         .empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; }
         .floating-orb { width: 120px; height: 120px; background: radial-gradient(circle, #6366f1, transparent); filter: blur(30px); animation: float 6s infinite ease-in-out; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        @@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
     </style>
 
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script>
-        const { createApp } = Vue;
+    @pushOnce('scripts')
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script>
+            const { createApp } = Vue;
 
-        createApp({
-            data() {
-                return {
-                    conversations: [],
-                    messages: [],
-                    qualification: {},
-                    selectedChat: null,
-                    search: '',
-                    newMessage: '',
-                    sending: false,
-                    showQualification: true,
-                    polling: null,
-                    intentLabels: {
-                        cold: '❄️ Explorador',
-                        warm: '🌤 Interesado',
-                        hot: '🔥 Muy Caliente',
-                        ready_to_buy: '🚀 Cierre Inminente'
+            createApp({
+                data() {
+                    return {
+                        conversations: [],
+                        messages: [],
+                        qualification: {},
+                        selectedChat: null,
+                        search: '',
+                        newMessage: '',
+                        sending: false,
+                        showQualification: true,
+                        polling: null,
+                        intentLabels: {
+                            cold: '❄️ Explorador',
+                            warm: '🌤 Interesado',
+                            hot: '🔥 Muy Caliente',
+                            ready_to_buy: '🚀 Cierre Inminente'
+                        }
+                    }
+                },
+                computed: {
+                    filteredConversations() {
+                        if (!this.search) return this.conversations;
+                        return this.conversations.filter(c => c.remote_jid.includes(this.search));
+                    }
+                },
+                mounted() {
+                    this.loadConversations();
+                    this.polling = setInterval(() => {
+                        this.loadConversations();
+                        if (this.selectedChat) this.loadMessages(this.selectedChat.id);
+                    }, 4000);
+                },
+                unmounted() {
+                    clearInterval(this.polling);
+                },
+                methods: {
+                    loadConversations() {
+                        axios.get('/admin/whatsapp/api/conversations').then(res => {
+                            this.conversations = res.data;
+                        });
+                    },
+                    selectChat(chat) {
+                        this.selectedChat = chat;
+                        this.loadMessages(chat.id);
+                        this.loadQualification(chat.id);
+                    },
+                    loadMessages(id) {
+                        axios.get('/admin/whatsapp/api/messages/' + id).then(res => {
+                            const oldLen = this.messages.length;
+                            this.messages = res.data;
+                            if (res.data.length > oldLen) this.scrollToBottom();
+                        });
+                    },
+                    loadQualification(id) {
+                        axios.get('/admin/whatsapp/api/qualification/' + id).then(res => {
+                            this.qualification = res.data;
+                        });
+                    },
+                    send() {
+                        if (!this.newMessage || this.sending) return;
+                        this.sending = true;
+                        axios.post('/admin/whatsapp/api/send', {
+                            conversation_id: this.selectedChat.id,
+                            content: this.newMessage
+                        }).then(res => {
+                            this.messages.push(res.data.message);
+                            this.newMessage = '';
+                            this.sending = false;
+                            this.scrollToBottom();
+                        }).catch(() => { this.sending = false; });
+                    },
+                    getIntentEmoji(level) {
+                        const map = { cold: '❄️', warm: '🌤', hot: '🔥', ready_to_buy: '🚀' };
+                        return map[level] || '🤖';
+                    },
+                    formatTime(d) {
+                        if (!d) return '';
+                        return new Date(d).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    },
+                    scrollToBottom() {
+                        setTimeout(() => {
+                            const c = document.getElementById('message-container');
+                            if (c) c.scrollTop = c.scrollHeight;
+                        }, 100);
                     }
                 }
-            },
-            computed: {
-                filteredConversations() {
-                    if (!this.search) return this.conversations;
-                    return this.conversations.filter(c => c.remote_jid.includes(this.search));
-                }
-            },
-            mounted() {
-                this.loadConversations();
-                this.polling = setInterval(() => {
-                    this.loadConversations();
-                    if (this.selectedChat) this.loadMessages(this.selectedChat.id);
-                }, 4000);
-            },
-            unmounted() {
-                clearInterval(this.polling);
-            },
-            methods: {
-                loadConversations() {
-                    axios.get('/admin/whatsapp/api/conversations').then(res => {
-                        this.conversations = res.data;
-                    });
-                },
-                selectChat(chat) {
-                    this.selectedChat = chat;
-                    this.loadMessages(chat.id);
-                    this.loadQualification(chat.id);
-                },
-                loadMessages(id) {
-                    axios.get('/admin/whatsapp/api/messages/' + id).then(res => {
-                        const oldLen = this.messages.length;
-                        this.messages = res.data;
-                        if (res.data.length > oldLen) this.scrollToBottom();
-                    });
-                },
-                loadQualification(id) {
-                    axios.get('/admin/whatsapp/api/qualification/' + id).then(res => {
-                        this.qualification = res.data;
-                    });
-                },
-                send() {
-                    if (!this.newMessage || this.sending) return;
-                    this.sending = true;
-                    axios.post('/admin/whatsapp/api/send', {
-                        conversation_id: this.selectedChat.id,
-                        content: this.newMessage
-                    }).then(res => {
-                        this.messages.push(res.data.message);
-                        this.newMessage = '';
-                        this.sending = false;
-                        this.scrollToBottom();
-                    }).catch(() => { this.sending = false; });
-                },
-                getIntentEmoji(level) {
-                    const map = { cold: '❄️', warm: '🌤', hot: '🔥', ready_to_buy: '🚀' };
-                    return map[level] || '🤖';
-                },
-                formatTime(d) {
-                    if (!d) return '';
-                    return new Date(d).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                },
-                scrollToBottom() {
-                    setTimeout(() => {
-                        const c = document.getElementById('message-container');
-                        if (c) c.scrollTop = c.scrollHeight;
-                    }, 100);
-                }
-            }
-        }).mount('#whatsapp-chat-app');
-    </script>
-@stop
+            }).mount('#whatsapp-chat-app');
+        </script>
+    @endPushOnce
+</x-admin::layouts>
