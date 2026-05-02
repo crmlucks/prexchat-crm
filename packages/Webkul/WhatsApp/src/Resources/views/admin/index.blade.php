@@ -29,7 +29,7 @@
                     <div 
                         v-for="chat in filteredConversations" 
                         :key="chat.id"
-                        @click="selectChat(chat)"
+                        @@click="selectChat(chat)"
                         :class="['chat-card', selectedChat && selectedChat.id === chat.id ? 'active' : '', chat.intent_level]"
                     >
                         <div class="chat-avatar">
@@ -61,7 +61,7 @@
                             </div>
                         </div>
                         <div class="header-actions">
-                            <button @click="showQualification = !showQualification" class="btn-ai-toggle" :class="{active: showQualification}">
+                            <button @@click="showQualification = !showQualification" class="btn-ai-toggle" :class="{active: showQualification}">
                                 <span class="ai-stars">✨</span> IA Insight
                             </button>
                         </div>
@@ -78,8 +78,8 @@
 
                     <footer class="chat-input-area">
                         <div class="input-glass-wrap">
-                            <input type="text" v-model="newMessage" @keyup.enter="send" placeholder="Mensaje manual para el cliente...">
-                            <button @click="send" :disabled="!newMessage || sending" class="send-btn">
+                            <input type="text" v-model="newMessage" @@keyup.enter="send" placeholder="Mensaje manual para el cliente...">
+                            <button @@click="send" :disabled="!newMessage || sending" class="send-btn">
                                 <svg v-if="!sending" viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M2.01 21L23 12L2.01 3L2 10l15 2l-15 2z"/></svg>
                                 <span v-else class="loader"></span>
                             </button>
@@ -168,12 +168,17 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('{{ asset('modern_real_estate_ai_bg_1777664978334.png') }}'); /* Use the generated image */
-            background-size: cover;
-            background-position: center;
-            opacity: 0.4;
-            filter: blur(50px);
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            opacity: 0.8;
             z-index: 0;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .main-layout {
