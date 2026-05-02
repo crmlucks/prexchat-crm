@@ -15,10 +15,12 @@ return new class extends Migration
     {
         Schema::create('whatsapp_conversations', function (Blueprint $chunk) {
             $chunk->id();
-            $chunk->foreignId('lead_id')->nullable()->constrained('leads')->onDelete('cascade');
+            $chunk->integer('lead_id')->unsigned()->nullable();
             $chunk->string('remote_jid');
             $chunk->string('external_id')->nullable(); // Instance name or Meta Phone ID
             $chunk->timestamps();
+
+            $chunk->foreign('lead_id')->references('id')->on('leads')->onDelete('cascade');
         });
 
         Schema::create('whatsapp_messages', function (Blueprint $chunk) {
