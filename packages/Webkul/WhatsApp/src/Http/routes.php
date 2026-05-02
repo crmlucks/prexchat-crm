@@ -8,6 +8,7 @@ Route::group(['middleware' => ['api']], function () {
 });
 
 Route::group(['middleware' => ['web', 'admin_locale', 'user']], function () {
+    Route::get('admin/whatsapp/leads', [WhatsAppController::class, 'leads'])->name('admin.whatsapp.leads');
     Route::get('admin/whatsapp/chats', [WhatsAppController::class, 'index'])->name('admin.whatsapp.index');
     
     // Chat API

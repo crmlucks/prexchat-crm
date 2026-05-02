@@ -13,17 +13,15 @@ return [
     ],
 
     /**
-     * Leads (Hiding standard leads to use WhatsApp Hub)
+     * Leads Pro (Custom Implementation)
      */
-    /*
     [
-        'key' => 'leads',
-        'name' => 'admin::app.layouts.leads',
-        'route' => 'admin.leads.index',
+        'key' => 'leads_pro',
+        'name' => 'Leads',
+        'route' => 'admin.whatsapp.leads',
         'sort' => 2,
         'icon-class' => 'icon-leads',
     ],
-    */
 
     /**
      * Quotes.

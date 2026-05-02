@@ -36,6 +36,11 @@ class WhatsAppController extends Controller
         return view('whatsapp::admin.index');
     }
 
+    public function leads()
+    {
+        return view('whatsapp::admin.leads.index');
+    }
+
     /**
      * API: List all conversations with last message and qualification data
      */
