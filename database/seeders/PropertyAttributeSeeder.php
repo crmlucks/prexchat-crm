@@ -12,75 +12,58 @@ class PropertyAttributeSeeder extends Seeder
     {
         $now = Carbon::now();
 
-        // 1. Create Attribute Group for Properties (if not exists)
-        $groupId = DB::table('attribute_groups')->insertGetId([
+        // ── 1. GRUPO PARA PROPIEDADES (PRODUCTOS) ──
+        $propertyGroupId = DB::table('attribute_groups')->insertGetId([
             'name' => 'Detalles de la Propiedad',
             'created_at' => $now,
             'updated_at' => $now,
         ]);
 
-        // 2. Define Real Estate Attributes
-        $attributes = [
-            [
-                'code' => 'property_type',
-                'name' => 'Tipo de Propiedad',
-                'type' => 'select',
-                'entity_type' => 'products',
-                'is_required' => 1,
-                'is_unique' => 0,
-                'options' => ['Casa', 'Departamento', 'Oficina', 'Terreno', 'Local Comercial']
-            ],
-            [
-                'code' => 'area_m2',
-                'name' => 'Área (m²)',
-                'type' => 'text',
-                'entity_type' => 'products',
-                'is_required' => 0,
-                'is_unique' => 0,
-            ],
-            [
-                'code' => 'rooms',
-                'name' => 'Habitaciones',
-                'type' => 'text',
-                'entity_type' => 'products',
-                'is_required' => 0,
-                'is_unique' => 0,
-            ],
-            [
-                'code' => 'bathrooms',
-                'name' => 'Baños',
-                'type' => 'text',
-                'entity_type' => 'products',
-                'is_required' => 0,
-                'is_unique' => 0,
-            ],
-            [
-                'code' => 'location_city',
-                'name' => 'Ciudad',
-                'type' => 'text',
-                'entity_type' => 'products',
-                'is_required' => 1,
-                'is_unique' => 0,
-            ],
-        ];
+        // ── 2. GRUPO PARA PERFIL INMOBILIARIO (LEADS) ──
+        $leadGroupId = DB::table('attribute_groups')->insertGetId([
+            'name' => 'Perfil Inmobiliario AI',
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
 
+        // ── 3. ATRIBUTOS DE PROPIEDADES ──
+        $this->createAttributes('products', $propertyGroupId, [
+            ['code' => 'property_type', 'name' => 'Tipo de Propiedad', 'type' => 'select', 'options' => ['Casa', 'Departamento', 'Oficina', 'Terreno']],
+            ['code' => 'area_m2', 'name' => 'Área (m²)', 'type' => 'text'],
+            ['code' => 'rooms', 'name' => 'Habitaciones', 'type' => 'text'],
+            ['code' => 'location_city', 'name' => 'Ciudad', 'type' => 'text'],
+        ]);
+
+        // ── 4. ATRIBUTOS DE LEADS (GESTIÓN DE VENTA) ──
+        $this->createAttributes('leads', $leadGroupId, [
+            ['code' => 'project_interest', 'name' => 'Proyecto de Interés', 'type' => 'select', 'options' => ['Residencial Primavera', 'Torre Ejecutiva', 'Hacienda Real']],
+            ['code' => 'budget', 'name' => 'Presupuesto', 'type' => 'text'],
+            ['code' => 'currency', 'name' => 'Moneda', 'type' => 'select', 'options' => ['USD', 'PEN']],
+            ['code' => 'source_channel', 'name' => 'Canal de Origen', 'type' => 'select', 'options' => ['WhatsApp AI', 'Facebook Ads', 'Instagram', 'Web', 'Referido']],
+            ['code' => 'interest_details', 'name' => 'Detalles de Interés', 'type' => 'textarea'],
+        ]);
+    }
+
+    private function createAttributes($entity, $groupId, $attributes)
+    {
         foreach ($attributes as $attr) {
             $options = $attr['options'] ?? null;
             unset($attr['options']);
             
-            $attr['created_at'] = $now;
-            $attr['updated_at'] = $now;
+            $attr['entity_type'] = $entity;
+            $attr['is_required'] = 0;
+            $attr['is_unique'] = 0;
+            $attr['created_at'] = Carbon::now();
+            $attr['updated_at'] = Carbon::now();
 
             $attributeId = DB::table('attributes')->insertGetId($attr);
 
-            // Link to Group
             DB::table('attribute_group_mappings')->insert([
                 'attribute_id' => $attributeId,
                 'attribute_group_id' => $groupId,
                 'sort_order' => 1
             ]);
 
-            // Add Options if select type
             if ($options) {
                 foreach ($options as $index => $label) {
                     DB::table('attribute_options')->insert([
