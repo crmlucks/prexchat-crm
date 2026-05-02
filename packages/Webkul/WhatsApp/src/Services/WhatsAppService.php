@@ -11,7 +11,7 @@ class WhatsAppService
 
     public function __construct()
     {
-        $this->client = new Client();
+        $this->client = new Client;
     }
 
     /**
@@ -22,8 +22,9 @@ class WhatsAppService
         $token = env('META_ACCESS_TOKEN');
         $phoneId = env('META_PHONE_NUMBER_ID');
 
-        if (!$token || !$phoneId) {
+        if (! $token || ! $phoneId) {
             Log::error('Meta credentials missing.');
+
             return false;
         }
 
@@ -31,19 +32,20 @@ class WhatsAppService
             $response = $this->client->post("https://graph.facebook.com/v19.0/{$phoneId}/messages", [
                 'headers' => [
                     'Authorization' => "Bearer {$token}",
-                    'Content-Type'  => 'application/json',
+                    'Content-Type' => 'application/json',
                 ],
                 'json' => [
                     'messaging_product' => 'whatsapp',
-                    'to'                => $to,
-                    'type'              => 'text',
-                    'text'              => ['body' => $text],
+                    'to' => $to,
+                    'type' => 'text',
+                    'text' => ['body' => $text],
                 ],
             ]);
 
             return $response->getStatusCode() === 200;
         } catch (\Exception $e) {
-            Log::error('Meta Send Error: ' . $e->getMessage());
+            Log::error('Meta Send Error: '.$e->getMessage());
+
             return false;
         }
     }
@@ -56,8 +58,9 @@ class WhatsAppService
         $url = env('EVOLUTION_API_URL');
         $key = env('EVOLUTION_API_KEY');
 
-        if (!$url || !$key) {
+        if (! $url || ! $key) {
             Log::error('Evolution credentials missing.');
+
             return false;
         }
 
@@ -67,15 +70,16 @@ class WhatsAppService
                     'apikey' => $key,
                 ],
                 'json' => [
-                    'number'      => $to,
+                    'number' => $to,
                     'textMessage' => ['text' => $text],
-                    'options'     => ['delay' => 1200, 'presence' => 'composing'],
+                    'options' => ['delay' => 1200, 'presence' => 'composing'],
                 ],
             ]);
 
             return $response->getStatusCode() === 201 || $response->getStatusCode() === 200;
         } catch (\Exception $e) {
-            Log::error('Evolution Send Error: ' . $e->getMessage());
+            Log::error('Evolution Send Error: '.$e->getMessage());
+
             return false;
         }
     }

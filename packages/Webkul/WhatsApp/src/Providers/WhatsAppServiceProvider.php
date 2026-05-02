@@ -13,13 +13,13 @@ class WhatsAppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadRoutesFrom(__DIR__ . '/../Http/routes.php');
+        $this->loadRoutesFrom(__DIR__.'/../Http/routes.php');
 
-        $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
 
-        $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'whatsapp');
+        $this->loadViewsFrom(__DIR__.'/../Resources/views', 'whatsapp');
 
-        $this->loadTranslationsFrom(__DIR__ . '/../Resources/lang', 'whatsapp');
+        $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'whatsapp');
     }
 
     /**

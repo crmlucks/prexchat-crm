@@ -2,12 +2,12 @@
 
 namespace Webkul\WhatsApp\Services;
 
-use Webkul\WhatsApp\Models\Conversation;
+use Illuminate\Support\Facades\Log;
 use Webkul\Contact\Models\Person;
 use Webkul\Lead\Models\Lead;
-use Webkul\Lead\Models\Source;
 use Webkul\Lead\Models\Pipeline;
-use Illuminate\Support\Facades\Log;
+use Webkul\Lead\Models\Source;
+use Webkul\WhatsApp\Models\Conversation;
 
 class LeadSyncService
 {
@@ -34,6 +34,7 @@ class LeadSyncService
             if ($existingLead) {
                 $conversation->update(['lead_id' => $existingLead->id]);
                 Log::info("WhatsApp conversation linked to existing lead #{$existingLead->id}");
+
                 return $existingLead;
             }
         }
@@ -54,11 +55,11 @@ class LeadSyncService
         $phone = $this->normalizePhone($conversation->remote_jid);
 
         // Create Person if not exists
-        if (!$person) {
+        if (! $person) {
             $person = Person::create([
-                'name'            => $context['lead_name'] ?? "WhatsApp {$phone}",
+                'name' => $context['lead_name'] ?? "WhatsApp {$phone}",
                 'contact_numbers' => [['value' => $phone, 'label' => 'work']],
-                'emails'          => [],
+                'emails' => [],
             ]);
             Log::info("Auto-created Person #{$person->id} from WhatsApp: {$phone}");
         }
@@ -75,15 +76,15 @@ class LeadSyncService
 
         // Create the Lead
         $lead = Lead::create([
-            'title'                  => "Lead WhatsApp — {$person->name}",
-            'description'            => "Lead auto-generado desde conversación de WhatsApp. Teléfono: {$phone}",
-            'lead_value'             => 0,
-            'status'                 => 1, // Open
-            'person_id'              => $person->id,
-            'lead_source_id'         => $source?->id,
-            'lead_pipeline_id'       => $pipeline?->id,
+            'title' => "Lead WhatsApp — {$person->name}",
+            'description' => "Lead auto-generado desde conversación de WhatsApp. Teléfono: {$phone}",
+            'lead_value' => 0,
+            'status' => 1, // Open
+            'person_id' => $person->id,
+            'lead_source_id' => $source?->id,
+            'lead_pipeline_id' => $pipeline?->id,
             'lead_pipeline_stage_id' => $firstStage?->id,
-            'user_id'                => 1, // Default admin user
+            'user_id' => 1, // Default admin user
         ]);
 
         // Link conversation to the new lead
@@ -102,7 +103,7 @@ class LeadSyncService
         // Search in the JSON array field `contact_numbers`
         // Each entry is like: [{"value": "+34600000001", "label": "work"}]
         return Person::get()->first(function ($person) use ($phone) {
-            if (!is_array($person->contact_numbers)) {
+            if (! is_array($person->contact_numbers)) {
                 return false;
             }
 

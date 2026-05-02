@@ -17,8 +17,8 @@ return new class extends Migration
             $chunk->id();
             $chunk->integer('lead_id')->unsigned()->nullable();
             $chunk->string('remote_jid');
-            $chunk->string('external_id')->nullable(); 
-            
+            $chunk->string('external_id')->nullable();
+
             // Campos de Perfil Inmobiliario
             $chunk->integer('ai_score')->default(0);
             $chunk->string('intent_level')->nullable(); // Frío, Caliente, etc.
@@ -26,7 +26,7 @@ return new class extends Migration
             $chunk->string('currency')->default('USD');
             $chunk->string('project_interest')->nullable();
             $chunk->text('interest_details')->nullable();
-            
+
             $chunk->timestamps();
 
             $chunk->foreign('lead_id')->references('id')->on('leads')->onDelete('cascade');

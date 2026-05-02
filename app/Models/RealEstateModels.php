@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Property extends Model
 {
     protected $fillable = [
-        'title', 'description', 'type', 'status', 'listing_type', 
-        'price', 'currency', 'area_m2', 'rooms', 'bathrooms', 
-        'parking_spots', 'city', 'address', 'features', 'images'
+        'title', 'description', 'type', 'status', 'listing_type',
+        'price', 'currency', 'area_m2', 'rooms', 'bathrooms',
+        'parking_spots', 'city', 'address', 'features', 'images',
     ];
 
     protected $casts = [
@@ -26,9 +26,9 @@ use Illuminate\Database\Eloquent\Model;
 class RealEstateLead extends Model
 {
     protected $fillable = [
-        'full_name', 'phone', 'email', 'min_budget', 'max_budget', 
-        'preferred_locations', 'preferred_types', 'ai_score', 
-        'urgency', 'assigned_agent_id'
+        'full_name', 'phone', 'email', 'min_budget', 'max_budget',
+        'preferred_locations', 'preferred_types', 'ai_score',
+        'urgency', 'assigned_agent_id',
     ];
 
     protected $casts = [

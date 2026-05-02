@@ -16,20 +16,20 @@ return new class extends Migration
             $table->enum('type', ['house', 'apartment', 'land', 'office', 'commercial'])->default('house');
             $table->enum('status', ['available', 'reserved', 'sold', 'rented'])->default('available');
             $table->enum('listing_type', ['sale', 'rent', 'temporary'])->default('sale');
-            
+
             $table->decimal('price', 15, 2);
             $table->string('currency')->default('USD');
-            
+
             $table->decimal('area_m2', 10, 2)->nullable();
             $table->integer('rooms')->default(0);
             $table->integer('bathrooms')->default(0);
             $table->integer('parking_spots')->default(0);
-            
+
             $table->string('city');
             $table->string('address');
             $table->json('features')->nullable(); // Pool, Garden, Gym, etc.
             $table->json('images')->nullable();
-            
+
             $table->timestamps();
         });
 
@@ -39,16 +39,16 @@ return new class extends Migration
             $table->string('full_name');
             $table->string('phone')->unique();
             $table->string('email')->nullable();
-            
+
             // Perfil Económico Detectado por IA
             $table->decimal('min_budget', 15, 2)->nullable();
             $table->decimal('max_budget', 15, 2)->nullable();
             $table->json('preferred_locations')->nullable(); // Ciudades o Barrios
             $table->json('preferred_types')->nullable(); // Tipos de propiedad
-            
+
             $table->integer('ai_score')->default(0); // 0-100 (Probabilidad de cierre)
             $table->enum('urgency', ['low', 'medium', 'high', 'immediate'])->default('low');
-            
+
             $table->unsignedBigInteger('assigned_agent_id')->nullable();
             $table->timestamps();
         });

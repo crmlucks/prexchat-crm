@@ -62,4 +62,3 @@ return [
     WebFormServiceProvider::class,
     WhatsAppServiceProvider::class,
 ];
-

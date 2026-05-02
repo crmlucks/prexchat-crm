@@ -2,10 +2,10 @@
 
 namespace Webkul\WhatsApp\Services;
 
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
 use Webkul\WhatsApp\Models\Conversation;
 use Webkul\WhatsApp\Models\Message;
-use Illuminate\Support\Facades\Log;
-use GuzzleHttp\Client;
 
 class LeadQualificationService
 {
@@ -17,31 +17,31 @@ class LeadQualificationService
      * High-intent keywords that indicate a lead is close to buying.
      */
     protected $highIntentKeywords = [
-        'comprar'      => 15,
-        'visitar'      => 12,
-        'agendar'      => 12,
-        'precio'       => 10,
-        'cuánto'       => 10,
-        'cuanto'       => 10,
+        'comprar' => 15,
+        'visitar' => 12,
+        'agendar' => 12,
+        'precio' => 10,
+        'cuánto' => 10,
+        'cuanto' => 10,
         'financiamiento' => 8,
-        'crédito'      => 8,
-        'credito'      => 8,
-        'hipoteca'     => 8,
-        'mudarnos'     => 12,
-        'mudanza'      => 10,
-        'urgente'      => 15,
-        'disponible'   => 8,
-        'reservar'     => 15,
-        'reserva'      => 15,
-        'señal'        => 15,
-        'contrato'     => 18,
-        'escritura'    => 18,
-        'notaría'      => 18,
-        'terraza'      => 5,
-        'garaje'       => 5,
+        'crédito' => 8,
+        'credito' => 8,
+        'hipoteca' => 8,
+        'mudarnos' => 12,
+        'mudanza' => 10,
+        'urgente' => 15,
+        'disponible' => 8,
+        'reservar' => 15,
+        'reserva' => 15,
+        'señal' => 15,
+        'contrato' => 18,
+        'escritura' => 18,
+        'notaría' => 18,
+        'terraza' => 5,
+        'garaje' => 5,
         'habitaciones' => 5,
-        'metros'       => 5,
-        'zona'         => 5,
+        'metros' => 5,
+        'zona' => 5,
     ];
 
     /**
@@ -131,13 +131,13 @@ class LeadQualificationService
 
         // 10. Update conversation
         $conversation->update([
-            'ai_score'              => $score,
-            'intent_level'          => $intentLevel,
-            'budget_detected'       => $budget,
-            'location_interest'     => $location,
-            'property_type'         => $propertyType,
+            'ai_score' => $score,
+            'intent_level' => $intentLevel,
+            'budget_detected' => $budget,
+            'location_interest' => $location,
+            'property_type' => $propertyType,
             'qualification_summary' => $summary,
-            'qualified_at'          => now(),
+            'qualified_at' => now(),
         ]);
 
         Log::info("Lead qualified: {$conversation->remote_jid} → Score: {$score} ({$intentLevel})");
@@ -186,7 +186,7 @@ class LeadQualificationService
             }
         }
 
-        return !empty($found) ? implode(', ', $found) : null;
+        return ! empty($found) ? implode(', ', $found) : null;
     }
 
     protected function detectPropertyType(string $text): ?string
@@ -202,9 +202,16 @@ class LeadQualificationService
 
     protected function scoreToIntent(int $score): string
     {
-        if ($score >= 80) return 'ready_to_buy';
-        if ($score >= 55) return 'hot';
-        if ($score >= 30) return 'warm';
+        if ($score >= 80) {
+            return 'ready_to_buy';
+        }
+        if ($score >= 55) {
+            return 'hot';
+        }
+        if ($score >= 30) {
+            return 'warm';
+        }
+
         return 'cold';
     }
 
@@ -238,9 +245,9 @@ class LeadQualificationService
         }
 
         $intentLabels = [
-            'cold'         => 'Frío — solo explorando',
-            'warm'         => 'Tibio — mostrando interés',
-            'hot'          => 'Caliente — listo para visitar',
+            'cold' => 'Frío — solo explorando',
+            'warm' => 'Tibio — mostrando interés',
+            'hot' => 'Caliente — listo para visitar',
             'ready_to_buy' => '🔥 Listo para comprar',
         ];
 
@@ -262,26 +269,26 @@ class LeadQualificationService
     {
         $webhookUrl = env('N8N_QUALIFICATION_WEBHOOK_URL');
 
-        if (!$webhookUrl) {
+        if (! $webhookUrl) {
             return; // n8n not configured, skip
         }
 
         try {
-            $client = new Client();
+            $client = new Client;
             $client->post($webhookUrl, [
                 'json' => [
                     'conversation_id' => $conversation->id,
-                    'remote_jid'      => $conversation->remote_jid,
-                    'lead_id'         => $conversation->lead_id,
-                    'full_text'       => $fullText,
-                    'current_score'   => $conversation->ai_score,
-                    'intent_level'    => $conversation->intent_level,
-                    'budget'          => $conversation->budget_detected,
-                    'location'        => $conversation->location_interest,
+                    'remote_jid' => $conversation->remote_jid,
+                    'lead_id' => $conversation->lead_id,
+                    'full_text' => $fullText,
+                    'current_score' => $conversation->ai_score,
+                    'intent_level' => $conversation->intent_level,
+                    'budget' => $conversation->budget_detected,
+                    'location' => $conversation->location_interest,
                 ],
             ]);
         } catch (\Exception $e) {
-            Log::warning('n8n qualification webhook failed: ' . $e->getMessage());
+            Log::warning('n8n qualification webhook failed: '.$e->getMessage());
         }
     }
 }

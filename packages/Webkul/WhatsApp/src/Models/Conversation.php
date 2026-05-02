@@ -24,7 +24,7 @@ class Conversation extends Model
 
     protected $casts = [
         'qualified_at' => 'datetime',
-        'ai_score'     => 'integer',
+        'ai_score' => 'integer',
     ];
 
     public function lead()

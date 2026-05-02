@@ -6,16 +6,19 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Webkul\WhatsApp\Models\Conversation;
 use Webkul\WhatsApp\Models\Message;
-use Webkul\WhatsApp\Services\WhatsAppService;
 use Webkul\WhatsApp\Services\AiService;
 use Webkul\WhatsApp\Services\LeadQualificationService;
 use Webkul\WhatsApp\Services\LeadSyncService;
+use Webkul\WhatsApp\Services\WhatsAppService;
 
 class WhatsAppController extends Controller
 {
     protected $whatsappService;
+
     protected $aiService;
+
     protected $qualificationService;
+
     protected $leadSyncService;
 
     public function __construct(
@@ -29,7 +32,6 @@ class WhatsAppController extends Controller
         $this->qualificationService = $qualificationService;
         $this->leadSyncService = $leadSyncService;
     }
-
 
     public function index()
     {
@@ -73,13 +75,13 @@ class WhatsAppController extends Controller
         $conversation = Conversation::findOrFail($id);
 
         return response()->json([
-            'ai_score'       => $conversation->ai_score,
-            'intent_level'   => $conversation->intent_level,
+            'ai_score' => $conversation->ai_score,
+            'intent_level' => $conversation->intent_level,
             'budget_detected' => $conversation->budget_detected,
             'location_interest' => $conversation->location_interest,
-            'property_type'  => $conversation->property_type,
+            'property_type' => $conversation->property_type,
             'qualification_summary' => $conversation->qualification_summary,
-            'qualified_at'   => $conversation->qualified_at,
+            'qualified_at' => $conversation->qualified_at,
         ]);
     }
 
@@ -90,7 +92,7 @@ class WhatsAppController extends Controller
     {
         $request->validate([
             'conversation_id' => 'required',
-            'content'         => 'required',
+            'content' => 'required',
         ]);
 
         $conversation = Conversation::findOrFail($request->conversation_id);
@@ -98,9 +100,9 @@ class WhatsAppController extends Controller
         // 1. Save locally
         $message = Message::create([
             'conversation_id' => $conversation->id,
-            'content'         => $request->content,
-            'sender'          => 'bot',
-            'message_type'    => 'text',
+            'content' => $request->content,
+            'sender' => 'bot',
+            'message_type' => 'text',
         ]);
 
         // 2. Send via external API (-> not .)
@@ -180,13 +182,13 @@ class WhatsAppController extends Controller
 
         Message::create([
             'conversation_id' => $conversation->id,
-            'content'         => $content,
-            'sender'          => 'user',
+            'content' => $content,
+            'sender' => 'user',
         ]);
 
         // ── AI response ──
         $aiResponse = $this->aiService->getResponse($content, [
-            'lead_id'   => $conversation->lead_id,
+            'lead_id' => $conversation->lead_id,
             'lead_name' => $data['pushName'] ?? null,
         ]);
 
@@ -198,8 +200,8 @@ class WhatsAppController extends Controller
 
         Message::create([
             'conversation_id' => $conversation->id,
-            'content'         => $aiResponse,
-            'sender'          => 'bot',
+            'content' => $aiResponse,
+            'sender' => 'bot',
         ]);
 
         // ── Qualify the lead after every user message ──
@@ -216,12 +218,12 @@ class WhatsAppController extends Controller
     {
         $value = $payload['entry'][0]['changes'][0]['value'];
 
-        if (!isset($value['messages'][0])) {
+        if (! isset($value['messages'][0])) {
             return response()->json(['status' => 'no_msg']);
         }
 
-        $msg     = $value['messages'][0];
-        $from    = $msg['from'];
+        $msg = $value['messages'][0];
+        $from = $msg['from'];
         $content = $msg['text']['body'] ?? '';
         $phoneId = $value['metadata']['phone_number_id'];
 
@@ -239,8 +241,8 @@ class WhatsAppController extends Controller
 
         Message::create([
             'conversation_id' => $conversation->id,
-            'content'         => $content,
-            'sender'          => 'user',
+            'content' => $content,
+            'sender' => 'user',
         ]);
 
         $aiResponse = $this->aiService->getResponse($content, [
@@ -251,8 +253,8 @@ class WhatsAppController extends Controller
 
         Message::create([
             'conversation_id' => $conversation->id,
-            'content'         => $aiResponse,
-            'sender'          => 'bot',
+            'content' => $aiResponse,
+            'sender' => 'bot',
         ]);
 
         // ── Qualify the lead after every user message ──
@@ -261,4 +263,3 @@ class WhatsAppController extends Controller
         return response()->json(['status' => 'success']);
     }
 }
-

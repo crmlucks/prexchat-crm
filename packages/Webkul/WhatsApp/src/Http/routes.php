@@ -10,12 +10,12 @@ Route::group(['middleware' => ['api']], function () {
 Route::group(['middleware' => ['web', 'admin_locale', 'user']], function () {
     Route::get('admin/whatsapp/leads', [WhatsAppController::class, 'leads'])->name('admin.whatsapp.leads');
     Route::get('admin/whatsapp/chats', [WhatsAppController::class, 'index'])->name('admin.whatsapp.index');
-    
+
     // Chat API
     Route::get('admin/whatsapp/api/conversations', [WhatsAppController::class, 'getConversations'])->name('admin.whatsapp.api.conversations');
     Route::get('admin/whatsapp/api/messages/{id}', [WhatsAppController::class, 'getMessages'])->name('admin.whatsapp.api.messages');
     Route::post('admin/whatsapp/api/send', [WhatsAppController::class, 'sendMessage'])->name('admin.whatsapp.api.send');
-    
+
     // Qualification API
     Route::get('admin/whatsapp/api/qualification/{id}', [WhatsAppController::class, 'getQualification'])->name('admin.whatsapp.api.qualification');
 });

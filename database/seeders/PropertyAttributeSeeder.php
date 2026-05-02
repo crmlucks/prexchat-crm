@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 class PropertyAttributeSeeder extends Seeder
 {
@@ -49,7 +49,7 @@ class PropertyAttributeSeeder extends Seeder
         foreach ($attributes as $attr) {
             $options = $attr['options'] ?? null;
             unset($attr['options']);
-            
+
             $attr['entity_type'] = $entity;
             $attr['is_required'] = 0;
             $attr['is_unique'] = 0;
@@ -61,7 +61,7 @@ class PropertyAttributeSeeder extends Seeder
             DB::table('attribute_group_mappings')->insert([
                 'attribute_id' => $attributeId,
                 'attribute_group_id' => $groupId,
-                'sort_order' => 1
+                'sort_order' => 1,
             ]);
 
             if ($options) {
@@ -69,7 +69,7 @@ class PropertyAttributeSeeder extends Seeder
                     DB::table('attribute_options')->insert([
                         'attribute_id' => $attributeId,
                         'name' => $label,
-                        'sort_order' => $index + 1
+                        'sort_order' => $index + 1,
                     ]);
                 }
             }
