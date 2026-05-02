@@ -60,7 +60,7 @@
                         </div>
                         <div class="header-actions">
                             <button @@click="showQualification = !showQualification" class="btn-ai-toggle" :class="{active: showQualification}">
-                                <span class="ai-stars">✨</span> IA Insight
+                                <span class="ai-stars">✨</span> Perfil Pro
                             </button>
                         </div>
                     </header>
@@ -91,55 +91,116 @@
                 </div>
             </main>
 
-            {{-- ── RIGHT: AI ANALYSIS ── --}}
+            {{-- ── RIGHT: AI REAL ESTATE PANEL (REDESIGNED) ── --}}
             <transition name="slide-right">
-                <aside v-if="showQualification && selectedChat" class="analysis-panel">
-                    <div class="panel-inner">
-                        <h3>🧠 Análisis Cognitivo</h3>
+                <aside v-if="showQualification && selectedChat" class="analysis-panel custom-scrollbar">
+                    
+                    {{-- Bloque 1: DATOS DEL PROSPECTO --}}
+                    <div class="panel-section">
+                        <div class="section-header">
+                            <i class="section-icon user-icon"></i>
+                            <h3>DATOS DEL PROSPECTO</h3>
+                        </div>
                         
-                        <div class="score-viz">
-                            <svg viewBox="0 0 36 36" class="circular-chart">
-                                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                <path class="circle" :stroke-dasharray="qualification.ai_score + ', 100'" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                <text x="18" y="20.35" class="percentage">@{{ qualification.ai_score }}%</text>
-                            </svg>
-                            <p class="score-label">Probabilidad de Conversión</p>
-                        </div>
-
-                        <div class="insight-cards">
-                            <div v-if="qualification.budget_detected" class="insight-card">
-                                <span class="card-icon">💰</span>
-                                <div>
-                                    <label>Presupuesto</label>
-                                    <p>@{{ qualification.budget_detected }}</p>
+                        <div class="form-grid">
+                            <div class="input-group full">
+                                <label>NOMBRE COMPLETO *</label>
+                                <input type="text" v-model="selectedChat.lead_name" placeholder="Nombre del cliente">
+                            </div>
+                            <div class="input-group">
+                                <label>TELÉFONO *</label>
+                                <div class="input-with-icon">
+                                    <span class="icon">📞</span>
+                                    <input type="text" v-model="selectedChat.remote_jid" disabled>
                                 </div>
                             </div>
-                            <div v-if="qualification.location_interest" class="insight-card">
-                                <span class="card-icon">📍</span>
-                                <div>
-                                    <label>Ubicación</label>
-                                    <p>@{{ qualification.location_interest }}</p>
-                                </div>
-                            </div>
-                            <div v-if="qualification.property_type" class="insight-card">
-                                <span class="card-icon">🏠</span>
-                                <div>
-                                    <label>Interés</label>
-                                    <p>@{{ qualification.property_type }}</p>
+                            <div class="input-group full">
+                                <label>CORREO ELECTRÓNICO</label>
+                                <div class="input-with-icon">
+                                    <span class="icon">✉️</span>
+                                    <input type="email" v-model="selectedChat.email" placeholder="email@ejemplo.com">
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="summary-box">
-                            <label>Resumen de Perfil</label>
-                            <p>@{{ qualification.qualification_summary || 'Generando resumen...' }}</p>
+                    {{-- Bloque 2: GESTIÓN DE VENTA --}}
+                    <div class="panel-section">
+                        <div class="section-header">
+                            <i class="section-icon flash-icon"></i>
+                            <h3>GESTIÓN DE VENTA</h3>
                         </div>
+                        
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label>PROYECTO INTERÉS</label>
+                                <select v-model="selectedChat.project_interest">
+                                    <option value="">Seleccionar...</option>
+                                    <option>Residencial Primavera</option>
+                                    <option>Torre Ejecutiva</option>
+                                    <option>Hacienda Real</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>ASESOR ASIGNADO</label>
+                                <select v-model="selectedChat.user_id">
+                                    <option value="">Sin asignar</option>
+                                    <option value="1">Admin</option>
+                                </select>
+                            </div>
+                            <div class="input-group full">
+                                <label>ETAPA DEL PIPELINE</label>
+                                <select v-model="selectedChat.stage">
+                                    <option>Nuevo Prospecto</option>
+                                    <option>Cualificado por IA</option>
+                                    <option>Cita Programada</option>
+                                    <option>Cierre</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
 
-                        <div class="action-footer">
-                            <button class="btn-create-opportunity">
-                                Convertir en Oportunidad
-                            </button>
+                    {{-- Bloque 3: PERFIL ECONÓMICO (AI POWERED) --}}
+                    <div class="panel-section ai-highlight">
+                        <div class="section-header">
+                            <i class="section-icon dollar-icon"></i>
+                            <h3>PERFIL ECONÓMICO</h3>
                         </div>
+                        
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label>CANAL ORIGEN</label>
+                                <select v-model="selectedChat.source">
+                                    <option>WhatsApp AI</option>
+                                    <option>Facebook Ads</option>
+                                    <option>Instagram</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>PRESUPUESTO</label>
+                                <div class="input-with-icon currency">
+                                    <span class="icon">$</span>
+                                    <input type="text" v-model="selectedChat.budget_detected" placeholder="0.00">
+                                </div>
+                            </div>
+                            <div class="input-group full">
+                                <label>DETALLES DE INTERÉS</label>
+                                <textarea v-model="selectedChat.interest_details" placeholder="Ej: Busca departamento de 3 dormitorios con vista al parque..."></textarea>
+                            </div>
+                            <div class="input-group full">
+                                <label>ETIQUETAS (SEPARAR POR COMA)</label>
+                                <div class="input-with-icon tag">
+                                    <span class="icon">🏷️</span>
+                                    <input type="text" placeholder="VIP, CALIENTE, INVERSIONISTA...">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-actions">
+                        <button class="btn-primary-gradient" @@click="saveLead">
+                            Actualizar Expediente
+                        </button>
                     </div>
                 </aside>
             </transition>
@@ -156,7 +217,7 @@
             height: calc(100vh - 60px);
             width: 100%;
             overflow: hidden;
-            background: #0f172a;
+            background: #0b0f1a;
             color: #f8fafc;
         }
 
@@ -166,17 +227,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            opacity: 0.8;
+            background: radial-gradient(circle at 50% 50%, #1e293b 0%, #0b0f1a 100%);
             z-index: 0;
-        }
-
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
         }
 
         .main-layout {
@@ -184,144 +236,169 @@
             z-index: 1;
             display: flex;
             height: 100%;
-            padding: 20px;
-            gap: 20px;
+            padding: 16px;
+            gap: 16px;
         }
 
         /* Sidebar Glass */
         .sidebar-glass {
-            width: 320px;
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 300px;
+            background: rgba(17, 24, 39, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
             display: flex;
             flex-direction: column;
-            overflow: hidden;
         }
 
-        .sidebar-header { padding: 24px; }
-        .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
-        .logo-orb { width: 32px; height: 32px; background: linear-gradient(135deg, #10b981, #6366f1); border-radius: 50%; box-shadow: 0 0 20px rgba(99, 102, 241, 0.5); }
-        .brand-name { font-size: 24px; font-weight: 800; margin: 0; }
-        .brand-name span { color: #10b981; }
+        .sidebar-header { padding: 20px; }
+        .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .logo-orb { width: 24px; height: 24px; background: #9333ea; border-radius: 50%; box-shadow: 0 0 15px #9333ea; }
+        .brand-name { font-size: 20px; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
+        .brand-name span { color: #9333ea; }
 
         .search-wrapper {
-            background: rgba(15, 23, 42, 0.5);
-            border-radius: 12px;
-            padding: 8px 16px;
+            background: #111827;
+            border-radius: 10px;
+            padding: 8px 12px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .search-wrapper input { background: transparent; border: none; color: white; outline: none; font-size: 14px; width: 100%; }
+        .search-wrapper input { background: transparent; border: none; color: white; outline: none; font-size: 13px; width: 100%; }
 
         /* Chat Cards */
         .chat-list { flex: 1; overflow-y: auto; padding: 10px; }
         .chat-card {
-            padding: 16px;
-            border-radius: 16px;
+            padding: 12px;
+            border-radius: 12px;
             display: flex;
-            gap: 12px;
+            gap: 10px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            margin-bottom: 8px;
-            border: 1px solid transparent;
+            transition: all 0.2s;
+            margin-bottom: 6px;
         }
-        .chat-card:hover { background: rgba(255, 255, 255, 0.05); }
-        .chat-card.active { background: rgba(99, 102, 241, 0.15); border-color: rgba(99, 102, 241, 0.3); }
+        .chat-card:hover { background: rgba(255, 255, 255, 0.03); }
+        .chat-card.active { background: rgba(147, 51, 234, 0.1); border: 1px solid rgba(147, 51, 234, 0.2); }
 
-        .chat-avatar { position: relative; width: 48px; height: 48px; background: rgba(255, 255, 255, 0.05); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .chat-avatar { position: relative; width: 40px; height: 40px; background: #1f2937; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
         .chat-info { flex: 1; min-width: 0; }
         .chat-top { display: flex; justify-content: space-between; align-items: center; }
-        .phone { font-weight: 600; font-size: 14px; }
-        .score-tag { font-size: 10px; font-weight: 800; color: #10b981; background: rgba(16, 185, 129, 0.1); padding: 2px 6px; border-radius: 6px; }
-        .last-msg { font-size: 12px; color: #94a3b8; margin: 4px 0 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        /* Pulse for Hot Leads */
-        .pulse-ring {
-            position: absolute; width: 100%; height: 100%;
-            border: 2px solid #ef4444; border-radius: 14px;
-            animation: pulse 2s infinite;
-        }
-        @@keyframes pulse { 0% { transform: scale(0.9); opacity: 0.8; } 100% { transform: scale(1.3); opacity: 0; } }
+        .phone { font-weight: 600; font-size: 13px; color: #e5e7eb; }
+        .score-tag { font-size: 9px; font-weight: 800; color: #10b981; }
+        .last-msg { font-size: 11px; color: #6b7280; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         /* Main Chat Area */
         .chat-main-glass {
             flex: 1;
-            background: rgba(30, 41, 59, 0.5);
-            backdrop-filter: blur(12px);
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(17, 24, 39, 0.4);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
 
-        .chat-header { padding: 24px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); display: flex; justify-content: space-between; align-items: center; }
-        .header-user { display: flex; align-items: center; gap: 12px; }
-        .status-indicator { width: 10px; height: 10px; border-radius: 50%; background: #10b981; box-shadow: 0 0 10px #10b981; }
-        .intent-pill { font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 2px 10px; border-radius: 20px; display: inline-block; margin-top: 4px; }
-        .intent-pill.cold { background: rgba(148, 163, 184, 0.2); color: #94a3b8; }
-        .intent-pill.warm { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
-        .intent-pill.hot { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
-        .intent-pill.ready_to_buy { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .chat-header { padding: 16px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); display: flex; justify-content: space-between; align-items: center; background: rgba(17, 24, 39, 0.6); }
+        .header-user { display: flex; align-items: center; gap: 10px; }
+        .status-indicator { width: 8px; height: 8px; border-radius: 50%; background: #10b981; }
+        .intent-pill { font-size: 9px; font-weight: 800; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; background: rgba(255, 255, 255, 0.05); margin-top: 4px; }
 
-        .btn-ai-toggle { background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: #a5b4fc; padding: 8px 16px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
-        .btn-ai-toggle.active { background: #6366f1; color: white; box-shadow: 0 0 15px rgba(99, 102, 241, 0.4); }
+        .btn-ai-toggle { background: #1f2937; border: 1px solid #374151; color: #d1d5db; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
+        .btn-ai-toggle.active { background: #9333ea; border-color: #a855f7; color: white; }
 
         /* Bubbles */
-        .message-thread { flex: 1; overflow-y: auto; padding: 30px; display: flex; flex-direction: column; gap: 16px; }
+        .message-thread { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
         .msg-bubble-wrap { display: flex; width: 100%; }
         .msg-bubble-wrap.user { justify-content: flex-start; }
         .msg-bubble-wrap.bot { justify-content: flex-end; }
-        .msg-bubble { max-width: 70%; padding: 12px 20px; border-radius: 20px; position: relative; font-size: 14px; line-height: 1.5; }
-        .user .msg-bubble { background: rgba(255, 255, 255, 0.05); color: #f1f5f9; border-bottom-left-radius: 4px; }
-        .bot .msg-bubble { background: linear-gradient(135deg, #4f46e5, #6366f1); color: white; border-bottom-right-radius: 4px; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.2); }
-        .msg-time { font-size: 9px; opacity: 0.5; display: block; margin-top: 4px; text-align: right; }
+        .msg-bubble { max-width: 80%; padding: 10px 16px; border-radius: 12px; font-size: 13px; line-height: 1.4; }
+        .user .msg-bubble { background: #1f2937; color: #e5e7eb; }
+        .bot .msg-bubble { background: #9333ea; color: white; }
+        .msg-time { font-size: 9px; opacity: 0.5; display: block; margin-top: 4px; }
 
         /* Input Area */
-        .chat-input-area { padding: 24px; }
-        .input-glass-wrap { background: rgba(15, 23, 42, 0.6); border-radius: 18px; padding: 8px 8px 8px 24px; display: flex; align-items: center; border: 1px solid rgba(255, 255, 255, 0.08); }
-        .input-glass-wrap input { flex: 1; background: transparent; border: none; color: white; outline: none; padding: 10px 0; }
-        .send-btn { width: 44px; height: 44px; background: #6366f1; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: white; border: none; cursor: pointer; transition: transform 0.2s; }
-        .send-btn:hover { transform: scale(1.05); background: #4f46e5; }
+        .chat-input-area { padding: 16px 20px; }
+        .input-glass-wrap { background: #111827; border-radius: 12px; padding: 6px 6px 6px 16px; display: flex; align-items: center; border: 1px solid #374151; }
+        .input-glass-wrap input { flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 13px; }
+        .send-btn { width: 36px; height: 36px; background: #9333ea; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; border: none; cursor: pointer; }
 
-        /* Analysis Panel */
-        .analysis-panel { width: 340px; background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.1); padding: 30px; overflow-y: auto; }
-        .analysis-panel h3 { margin: 0 0 30px; font-weight: 800; font-size: 18px; }
+        /* ── ANALYSIS PANEL (RIGHT) ── */
+        .analysis-panel {
+            width: 360px;
+            background: #111827;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
 
-        .score-viz { text-align: center; margin-bottom: 40px; }
-        .circular-chart { display: block; margin: 10px auto; max-width: 120px; max-height: 120px; }
-        .circle-bg { fill: none; stroke: rgba(255, 255, 255, 0.05); stroke-width: 2.8; }
-        .circle { fill: none; stroke-width: 2.8; stroke-linecap: round; stroke: #10b981; transition: stroke-dasharray 1s ease 0s; }
-        .percentage { fill: white; font-weight: 800; font-size: 8px; text-anchor: middle; }
-        .score-label { font-size: 12px; color: #94a3b8; font-weight: 600; }
+        .panel-section {
+            background: #1f2937;
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
 
-        .insight-cards { display: grid; gap: 12px; margin-bottom: 30px; }
-        .insight-card { background: rgba(15, 23, 42, 0.4); padding: 16px; border-radius: 16px; display: flex; gap: 12px; align-items: center; border: 1px solid rgba(255, 255, 255, 0.05); }
-        .card-icon { font-size: 20px; }
-        .insight-card label { display: block; font-size: 9px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.1em; }
-        .insight-card p { margin: 0; font-size: 14px; font-weight: 600; color: #f1f5f9; }
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
 
-        .summary-box { background: rgba(99, 102, 241, 0.05); border-left: 4px solid #6366f1; padding: 16px; border-radius: 12px; margin-bottom: 30px; }
-        .summary-box label { font-size: 10px; font-weight: 800; color: #818cf8; text-transform: uppercase; margin-bottom: 8px; display: block; }
-        .summary-box p { font-size: 12px; line-height: 1.6; margin: 0; color: #cbd5e1; }
+        .section-header h3 {
+            font-size: 12px;
+            font-weight: 800;
+            color: #d1d5db;
+            margin: 0;
+            letter-spacing: 1px;
+        }
 
-        .btn-create-opportunity { width: 100%; padding: 14px; background: #10b981; color: white; border-radius: 14px; border: none; font-weight: 800; cursor: pointer; transition: all 0.3s; }
-        .btn-create-opportunity:hover { background: #059669; box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+        .section-icon { width: 16px; height: 16px; display: inline-block; background-size: contain; background-repeat: no-repeat; }
+        .user-icon { filter: invert(36%) sepia(94%) saturate(1914%) hue-rotate(243deg) brightness(96%) contrast(105%); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z' /%3E%3C/svg%3E"); }
+        .flash-icon { filter: invert(36%) sepia(94%) saturate(1914%) hue-rotate(243deg) brightness(96%) contrast(105%); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z' /%3E%3C/svg%3E"); }
+        .dollar-icon { filter: invert(36%) sepia(94%) saturate(1914%) hue-rotate(243deg) brightness(96%) contrast(105%); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z' /%3E%3C/svg%3E"); }
 
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        .form-grid { display: flex; flex-direction: column; gap: 14px; }
+        .input-group label { display: block; font-size: 10px; font-weight: 800; color: #9ca3af; margin-bottom: 6px; }
+        
+        .input-group input, .input-group select, .input-group textarea {
+            width: 100%;
+            background: #111827;
+            border: 1px solid #374151;
+            border-radius: 10px;
+            padding: 10px 12px;
+            color: white;
+            font-size: 13px;
+            outline: none;
+        }
+        
+        .input-with-icon { position: relative; }
+        .input-with-icon .icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); opacity: 0.5; font-size: 14px; }
+        .input-with-icon input { padding-left: 36px; }
 
-        /* Animations */
-        .slide-right-enter-active, .slide-right-leave-active { transition: all 0.4s ease; }
-        .slide-right-enter-from, .slide-right-leave-to { transform: translateX(50px); opacity: 0; }
+        .btn-primary-gradient {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #9333ea, #7e22ce);
+            color: white;
+            border-radius: 12px;
+            border: none;
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .btn-primary-gradient:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(147, 51, 234, 0.4); }
 
-        .empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; }
-        .floating-orb { width: 120px; height: 120px; background: radial-gradient(circle, #6366f1, transparent); filter: blur(30px); animation: float 6s infinite ease-in-out; }
-        @@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #374151; border-radius: 10px; }
     </style>
 
     @pushOnce('scripts')
@@ -335,7 +412,6 @@
                     return {
                         conversations: [],
                         messages: [],
-                        qualification: {},
                         selectedChat: null,
                         search: '',
                         newMessage: '',
@@ -375,7 +451,6 @@
                     selectChat(chat) {
                         this.selectedChat = chat;
                         this.loadMessages(chat.id);
-                        this.loadQualification(chat.id);
                     },
                     loadMessages(id) {
                         axios.get('/admin/whatsapp/api/messages/' + id).then(res => {
@@ -384,10 +459,8 @@
                             if (res.data.length > oldLen) this.scrollToBottom();
                         });
                     },
-                    loadQualification(id) {
-                        axios.get('/admin/whatsapp/api/qualification/' + id).then(res => {
-                            this.qualification = res.data;
-                        });
+                    saveLead() {
+                        alert('Frontend Listo: Los datos se guardarán cuando activemos la base de datos completa.');
                     },
                     send() {
                         if (!this.newMessage || this.sending) return;
