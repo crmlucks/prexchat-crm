@@ -13,8 +13,9 @@ return [
     ],
 
     /**
-     * Leads.
+     * Leads (Hiding standard leads to use WhatsApp Hub)
      */
+    /*
     [
         'key' => 'leads',
         'name' => 'admin::app.layouts.leads',
@@ -22,6 +23,7 @@ return [
         'sort' => 2,
         'icon-class' => 'icon-leads',
     ],
+    */
 
     /**
      * Quotes.
@@ -100,7 +102,7 @@ return [
         'name' => 'WhatsApp AI',
         'route' => 'admin.whatsapp.index',
         'sort' => 6,
-        'icon-class' => 'icon-mail', // Using mail icon as placeholder
+        'icon-class' => 'icon-leads', // Better icon for AI Hub
     ],
 
     /**
@@ -127,11 +129,11 @@ return [
     ],
 
     /**
-     * Products.
+     * Propiedades (Formerly Products).
      */
     [
         'key' => 'products',
-        'name' => 'admin::app.layouts.products',
+        'name' => 'Propiedades',
         'route' => 'admin.products.index',
         'sort' => 8,
         'icon-class' => 'icon-product',
